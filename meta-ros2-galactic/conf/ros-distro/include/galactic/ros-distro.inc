@@ -70,6 +70,12 @@ ROS_WORLD_SKIP_GROUPS += "babeltrace-python"
 ROS_WORLD_SKIP_GROUPS += "cwiid"
 # recipes depends on libspnav
 ROS_WORLD_SKIP_GROUPS += "libspnav"
+# recipes depending on legacy mongo-cxx-driver (https://packages.debian.org/source/stretch/mongo-cxx-driver-legacy)
+# the mongodb recipe in meta-oe installs just the binaries mongoc, mongos, install_compass
+# the header files searched by mongo-store, warehouse-ros-mongo cmake files cmake/FindMongoClient.cmake and cmake/FindMongoDB.cmake
+# aren't even part of current version of mongo-cxx-driver
+# src/mongo/client/dbclient.h and src/mongo/client/dbclientinterface.h are only in the legacy branches
+ROS_WORLD_SKIP_GROUPS += "mongodb-legacy-cxx-driver"
 
 # recipes depending on 'x11' in DISTRO_FEATURES
 ROS_WORLD_SKIP_GROUPS += "${@bb.utils.contains('DISTRO_FEATURES', 'x11', '', 'x11', d)}"
@@ -100,6 +106,9 @@ ROS_WORLD_SKIP_GROUPS += "libqglviewer"
 
 # recipes depending on ignition-* (ROS_UNRESOLVED_DEP-ignition-gazebo5, ROS_UNRESOLVED_DEP-ignition-math6, ROS_UNRESOLVED_DEP-ignition-msgs7, ROS_UNRESOLVED_DEP-ignition-transport10, ROS_UNRESOLVED_DEP-ignition-rendering5, ROS_UNRESOLVED_DEP-ignition-common4, ROS_UNRESOLVED_DEP-ignition-gui5)
 ROS_WORLD_SKIP_GROUPS += "ignition"
+
+# recipes depending on libomp which could be provided by openmp@meta-clang
+ROS_WORLD_SKIP_GROUPS += "${@bb.utils.contains('BBFILE_COLLECTIONS', 'clang-layer', '', 'libomp', d)}"
 
 # recipes depending on ros1
 ROS_WORLD_SKIP_GROUPS += "${@bb.utils.contains('BBFILE_COLLECTIONS', 'ros1-layer', '', 'ros1', d)}"
